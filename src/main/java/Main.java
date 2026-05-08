@@ -8,7 +8,6 @@ public class Main {
 
     static void dfs(int u, int parent) {
 
-        // Caso donde u NO se conecta con hijos
         for (int v : adj[u]) {
 
             if (v == parent) continue;
@@ -18,7 +17,6 @@ public class Main {
             dp[u][0] += Math.max(dp[v][0], dp[v][1]);
         }
 
-        // Caso donde u SÍ se conecta con un hijo
         for (int v : adj[u]) {
 
             if (v == parent) continue;
@@ -35,9 +33,9 @@ public class Main {
     @SuppressWarnings("unchecked")
     public static void main(String[] args) throws Exception {
 
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        FastScanner fs = new FastScanner(System.in);
 
-        int n = Integer.parseInt(br.readLine());
+        int n = fs.nextInt();
 
         adj = new ArrayList[n + 1];
         dp = new int[n + 1][2];
@@ -48,10 +46,8 @@ public class Main {
 
         for (int i = 0; i < n - 1; i++) {
 
-            StringTokenizer st = new StringTokenizer(br.readLine());
-
-            int a = Integer.parseInt(st.nextToken());
-            int b = Integer.parseInt(st.nextToken());
+            int a = fs.nextInt();
+            int b = fs.nextInt();
 
             adj[a].add(b);
             adj[b].add(a);
@@ -60,5 +56,55 @@ public class Main {
         dfs(1, 0);
 
         System.out.println(Math.max(dp[1][0], dp[1][1]));
+    }
+
+    // Entrada rápida
+    static class FastScanner {
+
+        private final InputStream in;
+        private final byte[] buffer = new byte[1 << 16];
+
+        private int ptr = 0, len = 0;
+
+        FastScanner(InputStream is) {
+            in = is;
+        }
+
+        private int read() throws IOException {
+
+            if (ptr >= len) {
+                len = in.read(buffer);
+                ptr = 0;
+
+                if (len <= 0) return -1;
+            }
+
+            return buffer[ptr++];
+        }
+
+        int nextInt() throws IOException {
+
+            int c;
+
+            while ((c = read()) <= ' ') {
+                if (c == -1) return -1;
+            }
+
+            int sign = 1;
+
+            if (c == '-') {
+                sign = -1;
+                c = read();
+            }
+
+            int val = 0;
+
+            while (c > ' ') {
+                val = val * 10 + (c - '0');
+                c = read();
+            }
+
+            return val * sign;
+        }
     }
 }
