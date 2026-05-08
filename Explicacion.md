@@ -842,5 +842,104 @@ Eso producía:
 
 TIME LIMIT EXCEEDED
 
+explicación:
+
+Estructuras principales
+
+static ArrayList<Integer>\[] adj;
+
+static int\[]\[] dp;
+
+static int\[] parent;
+
+static int\[] order;
+
+adj → guarda el árbol (conexiones)
+
+dp → guarda la mejor respuesta en cada nodo
+
+parent → guarda el nodo padre
+
+order → guarda el orden de recorrido
+
+Lectura de datos
+
+
+
+Se leen los n nodos y las n-1 conexiones del árbol.
+
+
+
+Cada conexión se guarda en ambos sentidos:
+
+
+
+adj\[a].add(b);
+
+adj\[b].add(a);
+
+Recorrido del árbol
+
+
+
+Se usa una pila:
+
+
+
+Stack<Integer> stack = new Stack<>();
+
+
+
+Se empieza desde el nodo 1:
+
+
+
+stack.push(1);
+
+
+
+Se recorren todos los nodos guardando el orden en order\[].
+
+Procesamiento del árbol
+
+
+
+Se recorre el árbol de abajo hacia arriba:
+
+
+
+for (int i = n - 1; i >= 0; i--)
+
+Caso 1: no conectar el nodo
+
+dp\[u]\[0] += Math.max(dp\[v]\[0], dp\[v]\[1]);
+
+
+
+Cada hijo toma la mejor opción posible.
+
+Caso 2: conectar el nodo
+
+dp\[u]\[1] = Math.max(
+
+&#x20;   dp\[u]\[1],
+
+&#x20;   1 + dp\[v]\[0] + (dp\[u]\[0] - Math.max(dp\[v]\[0], dp\[v]\[1]))
+
+);
+
++1 porque usamos una arista
+
+el hijo queda ocupado
+
+se ajusta la contribución anterior
+Respuesta final
+
+System.out.println(Math.max(dp\[1]\[0], dp\[1]\[1]));
+
+
+
+Se escoge la mejor opción en la raíz.
+
 
 
