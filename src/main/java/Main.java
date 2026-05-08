@@ -5,30 +5,8 @@ public class Main {
 
     static ArrayList<Integer>[] adj;
     static int[][] dp;
-
-    static void dfs(int u, int parent) {
-
-        for (int v : adj[u]) {
-
-            if (v == parent) continue;
-
-            dfs(v, u);
-
-            dp[u][0] += Math.max(dp[v][0], dp[v][1]);
-        }
-
-        for (int v : adj[u]) {
-
-            if (v == parent) continue;
-
-            dp[u][1] = Math.max(
-                dp[u][1],
-                1
-                + dp[v][0]
-                + (dp[u][0] - Math.max(dp[v][0], dp[v][1]))
-            );
-        }
-    }
+    static int[] parent;
+    static int[] order;
 
     @SuppressWarnings("unchecked")
     public static void main(String[] args) throws Exception {
@@ -39,6 +17,8 @@ public class Main {
 
         adj = new ArrayList[n + 1];
         dp = new int[n + 1][2];
+        parent = new int[n + 1];
+        order = new int[n];
 
         for (int i = 1; i <= n; i++) {
             adj[i] = new ArrayList<>();
@@ -53,12 +33,57 @@ public class Main {
             adj[b].add(a);
         }
 
-        dfs(1, 0);
+        // DFS iterativo
+        Stack<Integer> stack = new Stack<>();
+
+        stack.push(1);
+        parent[1] = -1;
+
+        int idx = 0;
+
+        while (!stack.isEmpty()) {
+
+            int u = stack.pop();
+
+            order[idx++] = u;
+
+            for (int v : adj[u]) {
+
+                if (v == parent[u]) continue;
+
+                parent[v] = u;
+                stack.push(v);
+            }
+        }
+
+        // Procesamos de abajo hacia arriba
+        for (int i = n - 1; i >= 0; i--) {
+
+            int u = order[i];
+
+            for (int v : adj[u]) {
+
+                if (v == parent[u]) continue;
+
+                dp[u][0] += Math.max(dp[v][0], dp[v][1]);
+            }
+
+            for (int v : adj[u]) {
+
+                if (v == parent[u]) continue;
+
+                dp[u][1] = Math.max(
+                    dp[u][1],
+                    1
+                    + dp[v][0]
+                    + (dp[u][0] - Math.max(dp[v][0], dp[v][1]))
+                );
+            }
+        }
 
         System.out.println(Math.max(dp[1][0], dp[1][1]));
     }
 
-    // Entrada rápida
     static class FastScanner {
 
         private final InputStream in;
